@@ -1,5 +1,5 @@
 use crate::{
-    data::{ConversationInfo, Database, ManagerError, DEBUG},
+    data::{ConversationInfo, DbInfo, ManagerError, DEBUG},
     db_interactions::state::delete_state_key,
     send::api,
     CsmlBot, CsmlFlow,
@@ -166,7 +166,11 @@ pub fn get_flow_by_id<'a>(f_id: &str, flows: &'a [CsmlFlow]) -> Result<&'a CsmlF
 }
 
 pub fn get_default_flow<'a>(bot: &'a CsmlBot) -> Result<&'a CsmlFlow, ManagerError> {
-    match bot.flows.iter().find(|&flow| flow.id == bot.default_flow || flow.name == bot.default_flow ) {
+    match bot
+        .flows
+        .iter()
+        .find(|&flow| flow.id == bot.default_flow || flow.name == bot.default_flow)
+    {
         Some(flow) => Ok(flow),
         None => Err(ManagerError::Interpreter(
             "default flow does not exist".to_owned(),
@@ -178,7 +182,7 @@ pub fn search_flow<'a>(
     event: &Event,
     bot: &'a CsmlBot,
     client: &Client,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<&'a CsmlFlow, ManagerError> {
     match event {
         event if event.content_type == "flow_trigger" => {

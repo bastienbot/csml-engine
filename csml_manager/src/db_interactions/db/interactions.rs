@@ -1,12 +1,12 @@
-use crate::{Client, ConversationInfo, Database, ManagerError};
+use crate::{Client, ConversationInfo, DbInfo, ManagerError};
 
 pub fn init_interaction(
     event: serde_json::Value,
     client: &Client,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<String, ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::get_db;
         use crate::db_interactions::db_interactions_mongo::interactions::init_interaction as init;
 
@@ -30,7 +30,7 @@ pub fn init_interaction(
 
 pub fn update_interaction(data: &ConversationInfo, success: bool) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && data.db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::get_db;
         use crate::db_interactions::db_interactions_mongo::interactions::update_interaction as update;
 

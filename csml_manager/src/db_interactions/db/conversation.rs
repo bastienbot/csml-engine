@@ -1,14 +1,14 @@
-use crate::{Client, Conversation, ConversationInfo, Database, ManagerError};
+use crate::{Client, Conversation, ConversationInfo, DbInfo, ManagerError};
 
 pub fn create_conversation(
     flow_id: &str,
     step_id: &str,
     client: &Client,
     metadata: serde_json::Value,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<String, ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::conversation::create_conversation as create;
         use crate::db_interactions::db_interactions_mongo::get_db;
 
@@ -30,9 +30,9 @@ pub fn create_conversation(
     Err(ManagerError::Manager("db is not init correctly".to_owned()))
 }
 
-pub fn close_conversation(id: &String, client: &Client, db: &Database) -> Result<(), ManagerError> {
+pub fn close_conversation(id: &String, client: &Client, db: &DbInfo) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::conversation::close_conversation as close;
         use crate::db_interactions::db_interactions_mongo::get_db;
 
@@ -54,9 +54,9 @@ pub fn close_conversation(id: &String, client: &Client, db: &Database) -> Result
     Err(ManagerError::Manager("db is not init correctly".to_owned()))
 }
 
-pub fn close_all_conversations(client: &Client, db: &Database) -> Result<(), ManagerError> {
+pub fn close_all_conversations(client: &Client, db: &DbInfo) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::conversation::close_all_conversations as close_all;
         use crate::db_interactions::db_interactions_mongo::get_db;
 
@@ -78,12 +78,9 @@ pub fn close_all_conversations(client: &Client, db: &Database) -> Result<(), Man
     Err(ManagerError::Manager("db is not init correctly".to_owned()))
 }
 
-pub fn get_latest_open(
-    client: &Client,
-    db: &Database,
-) -> Result<Option<Conversation>, ManagerError> {
+pub fn get_latest_open(client: &Client, db: &DbInfo) -> Result<Option<Conversation>, ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::conversation::get_latest_open as get_latest;
         use crate::db_interactions::db_interactions_mongo::get_db;
 
@@ -110,7 +107,7 @@ pub fn update_conversation(
     step_id: Option<String>,
 ) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && data.db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::conversation::update_conversation as update;
         use crate::db_interactions::db_interactions_mongo::get_db;
 

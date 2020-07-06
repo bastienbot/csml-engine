@@ -1,4 +1,4 @@
-use crate::{Client, ContextJson, ConversationInfo, Database, ManagerError, Memories};
+use crate::{Client, ContextJson, ConversationInfo, DbInfo, ManagerError, Memories};
 
 pub fn add_memories(
     data: &mut ConversationInfo,
@@ -6,7 +6,7 @@ pub fn add_memories(
     interaction_order: i32,
 ) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && data.db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::memories::add_memories as add;
 
         return add(data, &memories, interaction_order);
@@ -32,10 +32,10 @@ pub fn get_memories(
     client: &Client,
     context: &mut ContextJson,
     metadata: &serde_json::Value,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<(), ManagerError> {
     #[cfg(feature = "mongo")]
-    if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
+    if cfg!(feature = "mongo") && db.db_type == "mongodb" {
         use crate::db_interactions::db_interactions_mongo::get_db;
         use crate::db_interactions::db_interactions_mongo::memories::get_memories as get;
 

@@ -1,4 +1,4 @@
-use crate::data::{Database, ManagerError};
+use crate::data::{Database, DbInfo, ManagerError};
 
 pub mod conversation;
 pub mod interactions;
@@ -33,7 +33,7 @@ fn init_mongo_credentials() -> Option<mongodb::options::auth::Credential> {
     Some(credentials)
 }
 
-pub fn init_db() -> Result<Database, ManagerError> {
+pub fn init_db() -> Result<DbInfo, ManagerError> {
     #[cfg(feature = "mongo")]
     if cfg!(feature = "mongo") && std::env::var("ENGINE_DB_TYPE") != Ok("http".to_owned()) {
         let name = match std::env::var("MONGODB_HOST") {
@@ -69,7 +69,10 @@ pub fn init_db() -> Result<Database, ManagerError> {
 
         let db = Database::Mongo(client.database(&dbname));
 
-        return Ok(db);
+        return Ok(DbInfo {
+            db_type: "mongodb".to_owned(),
+            db,
+        });
     }
 
     #[cfg(feature = "http")]
@@ -77,10 +80,16 @@ pub fn init_db() -> Result<Database, ManagerError> {
         let conf = Configuration::new();
         let db = Database::Httpdb(APIClient::new(conf));
 
-        return Ok(db);
+        return Ok(DbInfo {
+            db_type: "http".to_owned(),
+            db,
+        });
     }
 
-    Ok(Database::None)
+    Ok(DbInfo {
+        db_type: "None".to_owned(),
+        db: Database::None,
+    })
 }
 
 // ############################## conversation

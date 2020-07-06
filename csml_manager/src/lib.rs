@@ -19,7 +19,7 @@ use tools::*;
 
 use csmlinterpreter::data::{csml_bot::CsmlBot, csml_flow::CsmlFlow, ContextJson, Hold, Memories};
 use md5::{Digest, Md5};
-use std::{env, time::SystemTime, collections::HashMap};
+use std::{collections::HashMap, env, time::SystemTime};
 
 pub fn start_conversation(
     json_event: serde_json::Value,
@@ -57,7 +57,7 @@ pub fn get_open_conversation(client: &Client) -> Result<Option<Conversation>, Ma
     get_latest_open(client, &db)
 }
 
-pub fn get_steps_from_flow(bot: CsmlBot) -> HashMap<String, Vec<String>>{
+pub fn get_steps_from_flow(bot: CsmlBot) -> HashMap<String, Vec<String>> {
     csmlinterpreter::get_steps_from_flow(bot)
 }
 

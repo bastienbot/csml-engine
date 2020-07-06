@@ -15,6 +15,11 @@ pub struct CsmlData {
     pub metadata: Value,
 }
 
+pub struct DbInfo {
+    pub db_type: String,
+    pub db: Database,
+}
+
 pub enum Database {
     #[cfg(feature = "mongo")]
     Mongo(mongodb::Database),
@@ -52,7 +57,7 @@ pub struct ConversationInfo {
     // if switch the last_flow contains the info of the last flow | (flow_name, step_name) |
     pub last_flow: Option<(String, String)>,
     pub messages: Vec<Message>,
-    pub db: Database,
+    pub db: DbInfo,
 }
 
 #[derive(Debug)]

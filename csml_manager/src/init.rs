@@ -1,6 +1,6 @@
 use crate::db_interactions::{conversation::*, init_db, interactions::*, memories::*};
 use crate::{
-    data::{ConversationInfo, CsmlData, Database, ManagerError},
+    data::{ConversationInfo, CsmlData, DbInfo, ManagerError},
     tools::{get_default_flow, get_flow_by_id, search_flow},
     ContextJson, CsmlBot, CsmlFlow,
 };
@@ -116,7 +116,7 @@ fn get_conversation<'a>(
     flow_found: Option<&'a CsmlFlow>,
     metadata: serde_json::Value,
     client: &Client,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<String, ManagerError> {
     match get_latest_open(client, db)? {
         Some(conversation) => {
@@ -157,7 +157,7 @@ fn create_new_conversation<'a>(
     flow_found: Option<&'a CsmlFlow>,
     client: &Client,
     metadata: serde_json::Value,
-    db: &Database,
+    db: &DbInfo,
 ) -> Result<String, ManagerError> {
     let flow = match flow_found {
         Some(flow) => flow,
